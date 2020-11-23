@@ -20,9 +20,9 @@ function evalMessage(message, data) {
     }
 }
 
-exports.pubsubLogSink = function (event, callback) {
+exports.pubsubLogSink = function (data, context, callback) {
     const base64 = require('base-64');
-    let data = JSON.parse(base64.decode(event.data.data));
+    let data1 = JSON.parse(base64.decode(data1.data));
 
     Promise.all([
         getConfig(),
@@ -30,7 +30,7 @@ exports.pubsubLogSink = function (event, callback) {
     ])
         .then(([config, tests]) => {
             return Promise.all(tests.map(test => {
-                let clonedData = JSON.parse(JSON.stringify(data));
+                let clonedData = JSON.parse(JSON.stringify(data1));
                 if (runTest(test.test, clonedData)) {
                     let message = evalMessage(test.message, clonedData);
                     return sendSlack(test.slackChannel, message, config.slackAPIToken);
